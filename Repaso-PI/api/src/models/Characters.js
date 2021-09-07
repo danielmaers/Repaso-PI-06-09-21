@@ -1,6 +1,4 @@
 const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require("uuid");
-const episodes = require('./episodes');
 // Exportamos una funcion que define el modelo
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize) => {
@@ -8,9 +6,9 @@ module.exports = (sequelize) => {
   sequelize.define('characters', {
     id:{
       type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV1,
       allowNull: false,
-      primaryKey: true,
-      defaultValue: uuidv4() 
+      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
