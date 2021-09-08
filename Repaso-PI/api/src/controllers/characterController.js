@@ -1,4 +1,4 @@
-const { Characters, Episodes} = require("../db");
+const { Characters, Episodes, Op} = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
 
@@ -64,8 +64,47 @@ async function addCharacter(req,res,next){
        next(error)
    }
 };
+
+async function searchCharacter(req, res, next){
+    try {
+        let {name} = req.params
+        let characters= (await axios.get(`https://rickandmortyapi.com/api/character/?name=${name}`)).data.results.map(e=>{
+            return {
+                name: e.name,
+                status: e.status,
+                location: e.location.name,
+                image: e.image,
+            }
+        })
+        let dbchars= await Characters.findAll({
+            where:{
+                name:{
+                    [Op.iLike]: `%${name}%`
+                }
+            }
+        
+        })
+                
+            if(dbchars){
+                characters= characters.concat(dbchars)
+            }
+            res.json(characters)
+    
+
+
+        
+        
+
+        
+    } 
+    catch (error) {
+        next(error)
+    }
+}
+
 module.exports={
     getCharacters,
     addCharacter,
-    getOneCharacter
+    getOneCharacter,
+    searchCharacter
 }
