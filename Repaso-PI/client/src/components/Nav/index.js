@@ -6,6 +6,7 @@ import { getSearchCharacters,getEpisodes } from '../../redux/actions'
 function Nav() {
     const [input,setInput] = useState("")
     const dispatch = useDispatch()
+
     useEffect(()=>{
         dispatch(getEpisodes())
     },[dispatch])
@@ -14,7 +15,6 @@ function Nav() {
     setInput(event.target.value)
     }
     const buscar = ()=>{
-        console.log("hola")
         dispatch(getSearchCharacters(input))
 
     }

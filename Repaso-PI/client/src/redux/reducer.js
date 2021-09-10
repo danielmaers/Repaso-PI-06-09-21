@@ -1,9 +1,15 @@
-import {GET_ALL_CHARACTERS, GET_SEARCH_CHARACTERS,GET_EPISODES} from "./actions"
+import {GET_ALL_CHARACTERS, 
+    GET_SEARCH_CHARACTERS,
+    GET_EPISODES, 
+    GET_CHARACTER_BY_ID, 
+    UNMOUNT_CHARACTER_BY_ID,
+    SORT_CHARACTERS} from "./actions"
 
 
 const initialState={
     characters:[],
-    episodes:[],    
+    episodes:[],  
+    character: {}  
 }
 
 function reducer(state= initialState, action){
@@ -25,6 +31,26 @@ switch(action.type){
         return {
             ...state,
             episodes: action.payload
+        }
+    case GET_CHARACTER_BY_ID:
+        return {
+            ...state,
+            character: action.payload
+        }    
+    case UNMOUNT_CHARACTER_BY_ID:
+        return {
+            ...state,
+            character: action.payload
+        }  
+    case SORT_CHARACTERS:
+        let sorted = state.characters.sort(function(a,b){        
+            if(action.payload==="asc")  return a.name.localeCompare(b.name);
+            else return b.name.localeCompare(a.name)
+        })    
+    
+        return {
+            ...state,
+            characters: sorted
         }
     default: 
      return state
