@@ -1,4 +1,4 @@
-import {GET_ALL_CHARACTERS} from "./actions"
+import {GET_ALL_CHARACTERS, GET_SEARCH_CHARACTERS,GET_EPISODES} from "./actions"
 
 
 const initialState={
@@ -15,7 +15,17 @@ switch(action.type){
             ...state,
             characters: action.payload
         }
- 
+  
+    case GET_SEARCH_CHARACTERS:
+        return{
+            ...state,
+            characters:action.payload
+        }
+    case GET_EPISODES:
+        return {
+            ...state,
+            episodes: action.payload
+        }
     default: 
      return state
  

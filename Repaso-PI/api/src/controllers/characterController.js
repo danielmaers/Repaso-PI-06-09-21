@@ -5,8 +5,9 @@ const axios = require("axios");
 async function getCharacters(req, res, next){
     try {
         // por name
-        const { page } = req.query;
-        const itemsPerPage = 5; 
+        let { page } = req.query;
+        if (!page) page = 1;
+        const itemsPerPage = 10; 
         let characters= await axios.get("https://rickandmortyapi.com/api/character")
         characters= characters.data.results.map(e=>{
             return {
@@ -48,15 +49,14 @@ async function getOneCharacter (req,res,next){
 }
 async function addCharacter(req,res,next){
    try {
-       const { name, status, image, location, episode } = req.body;
-      
+       const { name, status, image, episodes } = req.body;
         // Characters.create({name, status, image, location})
         // .then(c=> c.addEpisodes(episode) )
         // .then(r =>{
         //    return res.json(r);
         // })
-       const newCharacter = await Characters.create({name, status, image, location});
-       await newCharacter.addEpisodes(episode); // para mas de un episodio "Promise.All"
+       const newCharacter = await Characters.create({name, status, image});
+       await newCharacter.addEpisodes(parseInt(episodes[0])); // para mas de un episodio "Promise.All"
        res.send(newCharacter);
 
    } 
@@ -67,35 +67,25 @@ async function addCharacter(req,res,next){
 
 async function searchCharacter(req, res, next){
     try {
-        let {name} = req.params
-        let characters= (await axios.get(`https://rickandmortyapi.com/api/character/?name=${name}`)).data.results.map(e=>{
-            return {
-                name: e.name,
-                status: e.status,
-                location: e.location.name,
-                image: e.image,
-            }
-        })
+        const { name } = req.params
+        // 
+        let result = []
         let dbchars= await Characters.findAll({
             where:{
                 name:{
                     [Op.iLike]: `%${name}%`
                 }
             }
-        
         })
-                
-            if(dbchars){
-                characters= characters.concat(dbchars)
-            }
-            res.json(characters)
-    
-
-
-        
-        
-
-        
+        if(dbchars && dbchars.length) result = result.concat(dbchars)
+     axios.get(`https://rickandmortyapi.com/api/character/?name=${name}`)
+     .then((res)=>{
+       result =  result.concat(res.data.results)
+        return res.json(result)
+     })
+     .catch(()=>{
+        return res.json(result)
+     })
     } 
     catch (error) {
         next(error)

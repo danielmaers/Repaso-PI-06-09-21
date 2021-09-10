@@ -19,10 +19,7 @@ module.exports = (sequelize) => {
     },
     image:{
       type: DataTypes.TEXT,
-    },
-    location: {
-      type: DataTypes.TEXT
-    },
+    }
     
   });
 };
