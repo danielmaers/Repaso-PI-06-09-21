@@ -37,7 +37,7 @@ async function getOneCharacter (req,res,next){
         const { id } = req.params;
         let character;
         if(isNaN(id)){
-            character = await Characters.findByPk(id);
+            character = await Characters.findOne({where:{id:id}, include:{model:Episodes}});
         }else{
             character = (await axios.get(`https://rickandmortyapi.com/api/character/${id}`)).data
         }
